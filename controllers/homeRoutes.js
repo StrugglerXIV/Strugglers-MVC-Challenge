@@ -1,21 +1,67 @@
-// Is this a Model, a View, or a Controller? 
-// This file is a Controller. 
-// What is it responsible for handling?
-// It routes commands to the Model and View parts.
-
 const router = require('express').Router();
+const { Posts, User } = require('../models');
 
-// Add a comment describing the purpose of the 'get' route
-// GET route for getting all of the dishes that are on the menu
-router.get('/', async (req, res) => {
-  // Add a comment describing the purpose of the render method
-  // This method is rendering the 'all' Handlebars.js template. This is how we connect each route to the correct template.
-  res.render('all');
+router.get('/dashboard', async (req, res) => {
+  try {
+    const postsData = await Posts.findAll({
+      attributes: ['title', 'content', 'date_created', 'id'],
+      include: [{ model: User, attributes: ['name'] }],
+    });
+
+    const loggedInUser = req.session.user;
+
+    const posts = postsData.map((post) => post.get({ plain: true }));
+
+    res.render('all', {
+      logged_in: req.session.logged_in,
+      loggedInUser,
+      posts,
+      mainTemplate: 'main',
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
-router.get('/login', async (req, res) => {
-  // Add a comment describing the purpose of the render method
-  // This method is rendering the 'all' Handlebars.js template. This is how we connect each route to the correct template.
+router.get('/newpost', async (req, res) => {
+  res.render('newpost', {
+    logged_in: req.session.logged_in,
+  });
+});
+
+router.get('/home', async (req, res) => {
+  try {
+    const loggedInUser = req.session.user;
+    console.log(loggedInUser); // Check the value of loggedInUser
+
+    const postsData = await Posts.findAll({
+      attributes: ['title', 'content', 'date_created', 'id'],
+      include: [{ model: User, attributes: ['id', 'name'] }],
+      where: {
+        user_id: loggedInUser.id,
+      },
+    });
+
+    const posts = postsData.map((post) => post.get({ plain: true }));
+
+    res.render('home', {
+      logged_in: req.session.logged_in,
+      loggedInUser,
+      posts,
+      mainTemplate: 'main',
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.get('/signup', async (req, res) => {
+  res.render('signup');
+});
+
+router.get('/', async (req, res) => {
   res.render('login');
 });
 

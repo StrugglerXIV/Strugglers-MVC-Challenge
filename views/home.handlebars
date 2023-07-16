@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="menu-container">
+    <div class="card">
+      <header class="card-header">
+        <p class="card-header-title">
+          Dashboard
+        </p>
+      </header>
+      <div class="card-content">
+        <div class="content">
+          <div class="post-list">
+            {{#each posts}}
+            <div class="post">
+              <h3 class="post-title">{{title}}</h3>
+              <p class="post-content">{{content}}</p>
+              <p class="post-info">Created by: {{user.name}} | Created at: {{formatDate date_created}}</p>
+              <button class="button is-danger delete-post-button" data-post-id="{{id}}">Delete</button>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      <footer class="card-footer">
+        <a href="/newpost" class="card-footer-item button is-success">
+          <span class="icon">
+            <i class="fas fa-plus"></i>
+          </span>
+          <span>Create Post</span>
+        </a>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('.delete-post-button').on('click', function () {
+      var postId = $(this).data('post-id');
+
+      // Send AJAX request to delete the post
+      $.ajax({
+        url: '/api/posts/' + postId,
+        method: 'DELETE',
+        success: function (response) {
+          // Refresh the page after successful deletion
+          location.reload();
+        },
+        error: function (err) {
+          console.log(err);
+        }
+      });
+    });
+  });
+</script>

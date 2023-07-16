@@ -1,34 +1,46 @@
-<!-- This template includes hardcoded data. In future lessons, you will be rendering data dynamically. -->
-<div class="menu-container">
-  <div class="card-header col-md-10">
-    <h2>
-      &#127869 Current Menu
-    </h2>
-  </div>
-    <div>
-      <ol>
-        <li>
-          French Bread with Brie Cheese
-        </li>
-        <li>
-          Cheese Plate with Spanish Chorizo
-        </li>
-        <li>
-          Fish Tacos
-        </li>
-        <li>
-          Tropical Fruit Salad
-        </li>
-        <li>
-          Pork Gyoza
-        </li>
-        <li>
-          Yebeg Tibs with Injera Bread
-        </li>
-        <li>
-          Cape Malay Curry
-        </li>
-      </ol>
+<div class="container">
+  <div class="menu-container">
+    <div class="card-header">
+      <h2 class="dashboard-title">Dashboard</h2>
+    </div>
+    <div class="post-list">
+      {{#each posts}}
+      <div class="post">
+        <h3 class="post-title">{{title}}</h3>
+        <p class="post-content">{{content}}</p>
+        <p class="post-info">Created by: {{user.name}} | Created at: {{formatDate date_created}}</p>
+        <button class="button is-danger delete-post-button" data-post-id="{{id}}">Delete</button>
+      </div>
+      {{/each}}
+    </div>
+    <div class="add-post-button">
+      <a href="/newpost" class="button is-success btn-add">+</a>
     </div>
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  function formatDate(date) {
+    return new Date(date).toLocaleString();
+  }
+
+  $(document).ready(function() {
+    $('.delete-post-button').on('click', function() {
+      var postId = $(this).data('post-id');
+
+      // Send AJAX request to delete the post
+      $.ajax({
+        url: '/api/posts/' + postId,
+        method: 'DELETE',
+        success: function(response) {
+          // Refresh the page after successful deletion
+          location.reload();
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      });
+    });
+  });
+</script>

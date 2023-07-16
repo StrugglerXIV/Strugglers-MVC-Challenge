@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/signup', async (req, res) => {
   try {
     const userData = await User.create(req.body);
 
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const userData = await User.findOne({ where: { email: req.body.email } });
+    const userData = await User.findOne({ where: { name: req.body.username } });
 
     if (!userData) {
       res
@@ -45,20 +45,26 @@ router.post('/login', async (req, res) => {
       return;
     }
 
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
-      
-      res.json({ user: userData, message: 'You are now logged in!' });
-    });
+    // Store the user data in the session
+    req.session.user = {
+      id: userData.id,
+      name: userData.name
+    };
 
+    req.session.logged_in = true;
+    req.session.save();
+
+    res.redirect('/dashboard'); // Redirect to the dashboard route
   } catch (err) {
     res.status(400).json(err);
   }
 });
 
+
+
 router.post('/logout', (req, res) => {
   if (req.session.logged_in) {
+    res.redirect('/');
     req.session.destroy(() => {
       res.status(204).end();
     });

@@ -1,30 +1,69 @@
-<!-- Add a comment indicating how this file fits into the MVC framework (is it a Model, a View, or a Controller?) and what it is responsible for handling. -->
-<!-- This file is part of the View. It handles UI/UX concerns (layout and display)-->
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Potluck Party</title>
-  <link rel="stylesheet" href="/css/jass.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Tech Blog</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
 </head>
 
 <body>
-  <div class="flex-column justify-space-around">
-    <header id="header-general" class="display-flex justify-space-between align-center p-2">
-        <div class="headers-top">
-        <h2>Home</h2>
-        <h2>Dashboard</h2>
-        <h2>Logout</h2>
+  <header class="header">
+    <div class="container">
+      <h1 class="title has-text-centered">The Tech Blog</h1>
+      {{#if logged_in}}
+      <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <div class="navbar-burger burger" data-target="navMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
-      <h1 class="tech-blog-text">
-        The Tech Blog
-      </h1>
-    </header>
-      <main class="container container-fluid mt-5">
-     {{{ body }}}
-      </main>
-  </div>
-  </body>
+        <div id="navMenu" class="navbar-menu">
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <form action="/home" method="GET">
+                <button type="submit" class="button is-primary">Home</button>
+              </form>
+            </div>
+            <div class="navbar-item">
+              <form action="/dashboard" method="GET">
+                <button type="submit" class="button is-primary">Dashboard</button>
+              </form>
+            </div>
+            <div class="navbar-item">
+              <form action="/api/users/logout" method="POST">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="button is-danger">Logout</button>
+              </form>
+            </div>
+            <div class="navbar-item">
+              <p class="logged-in-user">Logged in as: {{loggedInUser.name}}</p>
+            </div>
+          </div>
+        </div>
+      </nav>
+      {{/if}}
+    </div>
+  </header>
+
+
+
+
+  <main class="main">
+    <div class="container">
+      {{{ body }}}
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2023 The Tech Blog. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
 
 </html>
-
-
