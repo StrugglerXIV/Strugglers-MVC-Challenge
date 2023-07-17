@@ -1,6 +1,6 @@
 const withAuth = (req, res, next) => {
     // Check if the user is logged in
-    if (!req.session.logged_in || !req.session.user_id) {
+    if (!req.session.logged_in || !req.session.user.id) {
       res.status(401).json({ message: 'Unauthorized' });
       return;
     }

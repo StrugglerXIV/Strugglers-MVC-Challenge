@@ -25,8 +25,10 @@ router.get('/dashboard', async (req, res) => {
 });
 
 router.get('/newpost', async (req, res) => {
+  const loggedInUser = req.session.user;
   res.render('newpost', {
     logged_in: req.session.logged_in,
+    loggedInUser,
   });
 });
 

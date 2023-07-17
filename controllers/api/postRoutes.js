@@ -4,12 +4,14 @@ const withAuth = require('../../utils/auth');
 
 router.post('/create', withAuth, async (req, res) => {
   try {
+    const loggedInUser = req.session.user.id;
+    console.log(loggedInUser);
     const newPost = await Posts.create({
       ...req.body,
-      user_id: req.session.user_id,
+      user_id: req.session.user.id,
     });
 
-    res.status(200).json(newPost);
+    res.redirect('/dashboard');
   } catch (err) {
     res.status(400).json(err);
   }
@@ -24,21 +26,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', withAuth, async (req, res) => {
   try {
-    // Check if the user is logged in
-    if (!req.session.logged_in || !req.session.user_id) {
-      res.status(401).json({ message: 'Unauthorized' });
-      return;
-    }
-
     const postId = req.params.id;
 
     // Find the post by ID and user ID
     const post = await Posts.findOne({
       where: {
         id: postId,
-        user_id: req.session.user_id,
+        user_id: req.session.user.id,
       },
     });
 
@@ -51,7 +47,7 @@ router.delete('/:id', async (req, res) => {
     await Posts.destroy({
       where: {
         id: postId,
-        user_id: req.session.user_id,
+        user_id: req.session.user.id,
       },
     });
 
