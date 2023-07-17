@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Posts, User } = require('../models');
+const { Posts, User, Comments } = require('../models');
 
 router.get('/dashboard', async (req, res) => {
   try {
@@ -58,6 +58,48 @@ router.get('/home', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+router.get('/thread/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    // Fetch the post by ID
+    const postData = await Posts.findByPk(postId, {
+      include: [
+        {
+          model: User,
+          attributes: ['name'],
+        },
+        {
+          model: Comments,
+          include: [User],
+        },
+      ],
+    });
+
+    if (!postData) {
+      res.status(404).json({ message: 'Post not found' });
+      return;
+    }
+
+    // Extract the post and comments data
+    const post = postData.get({ plain: true });
+    const comments = post.comments;
+
+    // Render the thread template and pass the post and comments data
+    res.render('thread', {
+      logged_in: req.session.logged_in,
+      loggedInUser: req.session.user,
+      post,
+      comments,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 
 router.get('/signup', async (req, res) => {
   res.render('signup');

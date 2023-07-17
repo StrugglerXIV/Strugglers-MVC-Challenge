@@ -6,7 +6,9 @@
     <div class="post-list">
       {{#each posts}}
       <div class="post">
-        <h3 class="post-title">{{title}}</h3>
+        <h3 class="post-title">
+          <a href="/thread/{{id}}">{{title}}</a>
+        </h3>
         <p class="post-content">{{content}}</p>
         <p class="post-info">Created by: {{user.name}} | Created at: {{formatDate date_created}}</p>
         <button class="button is-danger delete-post-button" data-post-id="{{id}}">Delete</button>
@@ -25,19 +27,19 @@
     return new Date(date).toLocaleString();
   }
 
-  $(document).ready(function() {
-    $('.delete-post-button').on('click', function() {
+  $(document).ready(function () {
+    $('.delete-post-button').on('click', function () {
       var postId = $(this).data('post-id');
 
       // Send AJAX request to delete the post
       $.ajax({
         url: '/api/posts/' + postId,
         method: 'DELETE',
-        success: function(response) {
+        success: function (response) {
           // Refresh the page after successful deletion
           location.reload();
         },
-        error: function(err) {
+        error: function (err) {
           console.log(err);
         }
       });

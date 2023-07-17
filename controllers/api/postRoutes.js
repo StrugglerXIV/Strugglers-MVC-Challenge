@@ -4,9 +4,7 @@ const withAuth = require('../../utils/auth');
 
 router.post('/create', withAuth, async (req, res) => {
   try {
-    const loggedInUser = req.session.user.id;
-    console.log(loggedInUser);
-    const newPost = await Posts.create({
+    await Posts.create({
       ...req.body,
       user_id: req.session.user.id,
     });
@@ -26,7 +24,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.delete('/:id', withAuth, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const postId = req.params.id;
 
