@@ -6,15 +6,20 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 const sequelize = require('./config/connection');
 const { Handlebars } = require('./utils/helpers');
+const methodOverride = require('method-override');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 const hbs = exphbs.create({
-  defaultLayout: 'main',
-  helpers: Handlebars
+  helpers: {
+    formatDate: Handlebars.helpers.formatDate,
+    isCurrentUserPost: Handlebars.helpers.isCurrentUserPost,
+    ifCond: Handlebars.helpers.ifCond,
+  },
 });
 
+app.use(methodOverride('_method'));
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.use(express.static(path.join(__dirname, 'public')));

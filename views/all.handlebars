@@ -11,7 +11,9 @@
         </h3>
         <p class="post-content">{{content}}</p>
         <p class="post-info">Created by: {{user.name}} | Created at: {{formatDate date_created}}</p>
+        {{#if (isCurrentUserPostOwner user loggedInUser)}}
         <button class="button is-danger delete-post-button" data-post-id="{{id}}">Delete</button>
+        {{/if}}
       </div>
       {{/each}}
     </div>
@@ -21,11 +23,20 @@
   </div>
 </div>
 
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   function formatDate(date) {
     return new Date(date).toLocaleString();
   }
+
+function isCurrentUserPostOwner(postUser, loggedInUser) {
+  return postUser && loggedInUser && postUser.id === loggedInUser.id;
+}
+
+module.exports = { isCurrentUserPostOwner };
+
 
   $(document).ready(function () {
     $('.delete-post-button').on('click', function () {

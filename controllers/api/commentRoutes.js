@@ -34,22 +34,24 @@ router.post('/create', async (req, res) => {
 
 
 
-router.delete('/:id', withAuth, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const commentId = req.params.id;
 
     // Find the comment by ID and user ID
-    const comments = await Comments.findOne({
+    const comment = await Comments.findOne({
       where: {
         id: commentId,
         user_id: req.session.user.id,
       },
     });
 
-    if (!comments) {
-      res.status(404).json({ message: 'Post not found' });
+    if (!comment) {
+      res.status(404).json({ message: 'Comment not found' });
       return;
     }
+
+    const postId = comment.post_id; // Get the post ID associated with the comment
 
     // Delete the comment
     await Comments.destroy({
@@ -59,11 +61,15 @@ router.delete('/:id', withAuth, async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: 'Post deleted successfully' });
+    res.redirect('/thread/' + postId); // Redirect the user back to the post
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'Failed to delete post' });
+    res.status(500).json({ message: 'Failed to delete comment' });
   }
 });
+
+
+
+
 
 module.exports = router;

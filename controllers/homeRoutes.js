@@ -16,13 +16,13 @@ router.get('/dashboard', async (req, res) => {
       logged_in: req.session.logged_in,
       loggedInUser,
       posts,
-      mainTemplate: 'main',
     });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 router.get('/newpost', async (req, res) => {
   const loggedInUser = req.session.user;
@@ -81,7 +81,7 @@ router.get('/thread/:id', async (req, res) => {
       res.status(404).json({ message: 'Post not found' });
       return;
     }
-
+    const loggedInUser = req.session.user;
     // Extract the post and comments data
     const post = postData.get({ plain: true });
     const comments = post.comments;
@@ -89,9 +89,10 @@ router.get('/thread/:id', async (req, res) => {
     // Render the thread template and pass the post and comments data
     res.render('thread', {
       logged_in: req.session.logged_in,
-      loggedInUser: req.session.user,
+      loggedInUser,
       post,
       comments,
+      mainTemplate: 'main',
     });
   } catch (err) {
     console.log(err);

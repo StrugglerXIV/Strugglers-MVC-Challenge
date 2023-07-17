@@ -5,17 +5,23 @@
 </div>
 
 {{#if comments}}
-  <div class="comments">
-    <h4>Comments</h4>
-    {{#each comments}}
-      <div class="comment">
-        <p>{{this.content}}</p>
-        <p class="comment-info">Commented by: {{this.user.name}} | Commented at: {{formatDate this.date_created}}</p>
-      </div>
-    {{/each}}
+<div class="comments">
+  <h4>Comments</h4>
+  {{#each comments}}
+  <div class="comment">
+    <p>{{this.content}}</p>
+    <p class="comment-info">Commented by: {{this.user.name}} | Commented at: {{formatDate this.date_created}}</p>
+    {{#ifCond this.user.id ../loggedInUser.id}}
+    <form class="delete-comment-form" action="/api/comments/{{this.id}}?_method=DELETE" method="POST">
+      <input type="hidden" name="_method" value="DELETE">
+      <button class="button is-danger delete-comment-button" type="submit">Delete</button>
+    </form>
+    {{/ifCond}}
   </div>
+  {{/each}}
+</div>
 {{else}}
-  <p>No comments yet.</p>
+<p>No comments yet.</p>
 {{/if}}
 
 <form class="comment-form" action="/api/comments/create" method="POST">
