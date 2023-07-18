@@ -20,13 +20,12 @@ Comments.belongsTo(User, {
   foreignKey: 'user_id'
 });
 
-Comments.belongsTo(Posts, {
-  foreignKey: 'post_id'
+// Assuming you have defined the association correctly
+Posts.hasMany(Comments, {
+  foreignKey: 'post_id',
+  onDelete: 'CASCADE'
 });
 
-
-// Assuming you have defined the association correctly
-Posts.hasMany(Comments, { foreignKey: 'post_id', onDelete: 'CASCADE'});
 Comments.belongsTo(Posts, { foreignKey: 'post_id' });
 
 

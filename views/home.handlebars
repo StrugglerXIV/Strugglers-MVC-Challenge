@@ -37,7 +37,7 @@
   $(document).ready(function () {
     $('.delete-post-button').on('click', function () {
       var postId = $(this).data('post-id');
-
+      console.log(postId);
       // Send AJAX request to delete the post
       $.ajax({
         url: '/api/posts/' + postId,
